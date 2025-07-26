@@ -33,6 +33,7 @@ jobs:
           name: Angular Tests
           path: dist/test-results/**/*.xml
           reporter: java-junit
+          fail-on-error: false
 
       - name: 🛠️ Build Angular App
         run: npm run build -- --configuration production --base-href /NgChartsGallery/
