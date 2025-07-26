@@ -21,6 +21,19 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
+      - name: 🧪 Run Tests and Generate Report
+        run: |
+          npx ng test --watch=false --browsers=ChromeHeadless --code-coverage --reporters=junit
+        continue-on-error: true
+
+      - name: 📤 Publish Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Angular Tests
+          path: dist/test-results/**/*.xml
+          reporter: jest-junit
+
       - name: 🛠️ Build Angular App
         run: npm run build -- --configuration production --base-href /NgChartsGallery/
 
