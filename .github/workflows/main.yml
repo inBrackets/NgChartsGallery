@@ -1,0 +1,41 @@
+name: Deploy Angular App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🛠️ Build Angular App
+        run: npm run build -- --configuration production --base-href /AngularGitHubPages/
+
+      - name: 👤 Set Git Identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: 🚀 Deploy to GitHub Pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx angular-cli-ghpages \
+            --dir=dist/angular-git-hub-pages \
+            --no-silent \
+            --branch=gh-pages \
+            --message="Auto-deployed from GitHub Actions 🚀" \
+            --repo=https://x-access-token:${GH_TOKEN}@github.com/inBrackets/AngularGitHubPages.git
