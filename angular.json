@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AngularGitHubPages": {
+    "NgChartsGallery": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "AngularGitHubPages:build:production"
+              "buildTarget": "NgChartsGallery:build:production"
             },
             "development": {
-              "buildTarget": "AngularGitHubPages:build:development"
+              "buildTarget": "NgChartsGallery:build:development"
             }
           },
           "defaultConfiguration": "development"
