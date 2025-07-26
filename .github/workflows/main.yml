@@ -32,7 +32,7 @@ jobs:
         with:
           name: Angular Tests
           path: dist/test-results/**/*.xml
-          reporter: jest-junit
+          reporter: java-junit
 
       - name: 🛠️ Build Angular App
         run: npm run build -- --configuration production --base-href /NgChartsGallery/
