@@ -23,7 +23,7 @@ jobs:
 
       - name: 🧪 Run Tests and Generate Report
         run: |
-          npx ng test --watch=false --browsers=ChromeHeadless --code-coverage --reporters=junit
+          npx ng test --watch=false --browsers=ChromeHeadless --reporters=junit
         continue-on-error: true
 
       - name: 📤 Publish Test Report
