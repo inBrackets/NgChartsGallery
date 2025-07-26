@@ -11,6 +11,7 @@ import {HighchartsChartComponent} from 'highcharts-angular';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  title: string =  'NgChartsGallery'
   chartOptions: Highcharts.Options = {
     title: {
       text: 'U.S Solar Employment Growth',
