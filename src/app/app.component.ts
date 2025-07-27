@@ -16,8 +16,6 @@ import {forkJoin} from 'rxjs';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
-
   title: string =  'NgChartsGallery'
 
   masterSrv = inject(MasterService);
