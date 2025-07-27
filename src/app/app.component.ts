@@ -4,7 +4,6 @@ import * as Highcharts from 'highcharts';
 import {HighchartsChartComponent} from 'highcharts-angular';
 import {MasterService} from './services/master.service';
 import {NumberOfEmployees} from './model/master.model';
-import {HttpClient} from '@angular/common/http';
 import {forkJoin} from 'rxjs';
 
 @Component({
@@ -16,11 +15,14 @@ import {forkJoin} from 'rxjs';
 })
 export class AppComponent implements OnInit {
 
-  title: string =  'NgChartsGallery'
+  title: string = 'NgChartsGallery'
 
   masterSrv = inject(MasterService);
   installationAndDevelopersArray: NumberOfEmployees[] = [];
   manufacturingArray: NumberOfEmployees[] = [];
+  salesAndDistributionArray: NumberOfEmployees[] = [];
+  operationsAndMaintenanceArray: NumberOfEmployees[] = [];
+  otherArray: NumberOfEmployees[] = [];
   chartOptions: Highcharts.Options = {}
 
   updateChart() {
@@ -79,24 +81,24 @@ export class AppComponent implements OnInit {
       }, {
         name: 'Sales & Distribution',
         type: 'line',
-        data: [
-          11744, 30000, 16005, 19771, 20185, 24377,
-          32147, 30912, 29243, 29213, 25663, 28978, 30618
-        ]
+        data: this.salesAndDistributionArray.map(item => ({
+          x: item.year,
+          y: item.employees
+        }))
       }, {
         name: 'Operations & Maintenance',
         type: 'line',
-        data: [
-          null, null, null, null, null, null, null,
-          null, 11164, 11218, 10077, 12530, 16585
-        ]
+        data: this.operationsAndMaintenanceArray.map(item => ({
+          x: item.year,
+          y: item.employees
+        }))
       }, {
         name: 'Other',
         type: 'line',
-        data: [
-          21908, 5548, 8105, 11248, 8989, 11816, 18274,
-          17300, 13053, 11906, 10073, 11471, 11648
-        ]
+        data: this.otherArray.map(item => ({
+          x: item.year,
+          y: item.employees
+        }))
       }],
 
       responsive: {
@@ -119,10 +121,17 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     forkJoin({
       installation: this.masterSrv.getInstallationAndDevelopers(),
-      manufacturing: this.masterSrv.getManufacturing()
-    }).subscribe(({ installation, manufacturing }) => {
+      manufacturing: this.masterSrv.getManufacturing(),
+      sales: this.masterSrv.geSalesAndDistribution(),
+      operations: this.masterSrv.getOperationsAndMaintenance(),
+      other: this.masterSrv.getOther()
+
+    }).subscribe(({installation, manufacturing, sales, operations, other}) => {
       this.installationAndDevelopersArray = installation;
       this.manufacturingArray = manufacturing;
+      this.salesAndDistributionArray = sales;
+      this.operationsAndMaintenanceArray = operations;
+      this.otherArray = other;
       this.updateChart();
     });
   }

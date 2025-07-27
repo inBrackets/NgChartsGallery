@@ -17,4 +17,16 @@ export class MasterService {
   getManufacturing(): Observable<NumberOfEmployees[]> {
     return this.http.get<NumberOfEmployees[]>('assets/manufacturing.json');
   }
+
+  geSalesAndDistribution(): Observable<NumberOfEmployees[]> {
+    return this.http.get<NumberOfEmployees[]>('assets/sales-and-distribution.json');
+  }
+
+  getOperationsAndMaintenance(): Observable<NumberOfEmployees[]> {
+    return this.http.get<NumberOfEmployees[]>('assets/operations-and-maintenance.json');
+  }
+
+  getOther(): Observable<NumberOfEmployees[]> {
+    return this.http.get<NumberOfEmployees[]>('assets/other.json');
+  }
 }
