@@ -33,4 +33,9 @@ export class MasterService {
   getNewIntraday(): Observable<[number, number, number, number, number][]> {
     return this.http.get<[number, number, number, number, number][]>('assets/new-intraday.json');
   }
+
+  getAaplOhlc(): Observable<[number, number, number, number, number][]> {
+    return this.http.get<[number, number, number, number, number][]>('assets/aapl-ohlc.json');
+  }
+
 }
