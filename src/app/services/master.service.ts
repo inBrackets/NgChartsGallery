@@ -29,4 +29,8 @@ export class MasterService {
   getOther(): Observable<NumberOfEmployees[]> {
     return this.http.get<NumberOfEmployees[]>('assets/other.json');
   }
+
+  getNewIntraday(): Observable<[number, number, number, number, number][]> {
+    return this.http.get<[number, number, number, number, number][]>('assets/new-intraday.json');
+  }
 }
