@@ -4,12 +4,12 @@ import {LineChartComponent} from './components/line-chart/line-chart.component';
 import {IntradayCandlestickComponent} from './components/intraday-candlestick/intraday-candlestick.component';
 import {CandlestickComponent} from './components/candlestick/candlestick.component';
 import {
-  SmaAndVolumeByPriceComponentimplements
+  SmaAndVolumeByPriceComponent
 } from './components/sma-and-volume-by-price/sma-and-volume-by-price.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponentimplements],
+  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponent],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.css'

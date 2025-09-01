@@ -15,7 +15,6 @@ import { HighchartsChartDirective } from 'highcharts-angular';
     providePartialHighcharts({
       modules: () => [
         import('highcharts/esm/modules/stock'),
-
         import('highcharts/esm/indicators/indicators'),
         import('highcharts/esm/indicators/volume-by-price')
         //, import('highcharts/indicators/price-channel')
@@ -26,7 +25,7 @@ import { HighchartsChartDirective } from 'highcharts-angular';
   standalone: true,
   styleUrl: './sma-and-volume-by-price.component.css'
 })
-export class SmaAndVolumeByPriceComponentimplements implements OnInit {
+export class SmaAndVolumeByPriceComponent implements OnInit {
 
   masterSrv = inject(MasterService);
   ohlcData: [number, number, number, number, number][] = [];
