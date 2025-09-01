@@ -7,10 +7,13 @@ import {SmaAndVolumeByPriceComponent} from './components/sma-and-volume-by-price
 import {
   TechnicalIndicatorSeriesRsiComponent
 } from './components/technical-indicator-series-rsi/technical-indicator-series-rsi.component';
+import {
+  TechnicalIndicatorSeriesStochasticComponent
+} from './components/technical-indicator-series-stochastic/technical-indicator-series-stochastic.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponent, TechnicalIndicatorSeriesRsiComponent],
+  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponent, TechnicalIndicatorSeriesRsiComponent, TechnicalIndicatorSeriesStochasticComponent],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.css'
