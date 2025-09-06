@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import {interval, map, Observable, startWith} from 'rxjs';
+import { interval, map, Observable, startWith } from 'rxjs';
+import * as Highcharts from 'highcharts';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,9 @@ export class OrderBookService {
    * @param n number of points
    * @returns [bids[], asks[]]
    */
-  generateBidAndAskData(n: number): [OrderPoint[], OrderPoint[]] {
-    const bids: OrderPoint[] = [];
-    const asks: OrderPoint[] = [];
+  generateBidAndAskData(n: number): [Highcharts.PointOptionsObject[], Highcharts.PointOptionsObject[]] {
+    const bids: Highcharts.PointOptionsObject[] = [];
+    const asks: Highcharts.PointOptionsObject[] = [];
 
     let bidPrice = this.getRandomNumber(29000, 30000);
     let askPrice = bidPrice + 0.5;
@@ -31,14 +32,15 @@ export class OrderBookService {
       bids.push({
         x: i,
         y: (i + 1) * this.getRandomNumber(70000, 110000),
-        price: bidPrice,
-      });
+        // 👇 Highcharts lets you add custom fields
+        price: bidPrice
+      } as Highcharts.PointOptionsObject);
 
       asks.push({
         x: i,
         y: (i + 1) * this.getRandomNumber(70000, 110000),
-        price: askPrice,
-      });
+        price: askPrice
+      } as Highcharts.PointOptionsObject);
     }
 
     return [bids, asks];
@@ -49,16 +51,10 @@ export class OrderBookService {
    * @param n number of points
    * @param intervalMs update frequency
    */
-  startAutoUpdate(n: number, intervalMs: number): Observable<[OrderPoint[], OrderPoint[]]> {
+  startAutoUpdate(n: number, intervalMs: number): Observable<[Highcharts.PointOptionsObject[], Highcharts.PointOptionsObject[]]> {
     return interval(intervalMs).pipe(
       startWith(0), // emit immediately on subscribe
       map(() => this.generateBidAndAskData(n))
     );
   }
-}
-
-export interface OrderPoint {
-  x: number;
-  y: number;
-  price: number;
 }
