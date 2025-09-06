@@ -64,9 +64,14 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
       max: 1200000,
       labels: {
         enabled: true,
-        format: '{#if isLast}Asks{/if}',
+        formatter: function () {
+          if ((this as any).isLast) return 'Asks';
+          return '';
+        },
         style: {
           color: '#ffffff',
+          fontSize: '16px',
+          fontWeight: '700'
         },
         y: 10
       }
@@ -89,18 +94,24 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
       max: 1200000,
       labels: {
         enabled: true,
-        format: `
-                {#if (eq pos 0)}Price ($){/if}
-                {#if isLast}Bids{/if}
-            `,
+        formatter: function () {
+          const instrument = "$"
+          if ((this as any).pos === 0) return `Price (${instrument})`;
+          if (this.isLast) return 'Bids';
+          return '';
+        },
         style: {
           color: '#ffffff',
+          fontSize: '16px',
+          fontWeight: '700'
         },
         y: 10
       }
     }],
 
-    legend: { enabled: false },
+    legend: {
+      itemStyle: {color: '#ffffff', fontSize: '14px'}
+    },
 
     navigation: {
       buttonOptions: {
@@ -124,28 +135,38 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
 
     series: [{
       type: 'bar',
+      pointWidth: 25, // thicker bars (Asks)
       dataLabels: [{
+        // volume labels (Asks)
         align: 'right',
         alignTo: 'plotEdges',
-        format: '{point.y:,.0f}'
+        format: '{point.y:,.0f}',
+        style: {fontSize: '14px', textOutline: 'none'},
       }, {
+        // prices labels (Asks)
         align: 'left',
         inside: true,
-        format: '{point.price:,.1f}'
+        format: '{point.price:,.1f}',
+        style: { fontSize: '16px', textOutline: 'none', color: '#fff' }
       }],
       name: 'Asks',
       color: '#ce4548',
       data: asksData
     }, {
       type: 'bar',
+      pointWidth: 25, // thicker bars (Bids)
       dataLabels: [{
+        // volume labels (Bids)
         align: 'left',
         alignTo: 'plotEdges',
-        format: '{point.y:,.0f}'
+        format: '{point.y:,.0f}',
+        style: {fontSize: '14px', textOutline: 'none'},
       }, {
+        // prices labels (Bids)
         align: 'right',
         inside: true,
-        format: '{point.price:,.1f}'
+        format: '{point.price:,.1f}',
+        style: { fontSize: '16px', textOutline: 'none', color: '#fff' }
       }],
       name: 'Bids',
       color: '#107db7',
