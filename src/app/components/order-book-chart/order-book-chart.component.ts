@@ -207,15 +207,15 @@ export class OrderBookChartComponent implements OnInit, OnDestroy {
 
   startUpdates() {
     this.subscription = this.orderBookService
-      .startAutoUpdate(10, 1000) // 10 points every 1s
+      .startAutoUpdate(10, 200) // 10 points every 1s
       .subscribe(([bids, asks]) => {
         this.bids = bids;
         this.asks = asks;
         this.chartOptions = createOrderBookChartOptions(asks, bids);
-        console.log("Bids:")
-        console.log(bids);
-        console.log("Asks:");
-        console.log(asks);
+        // console.log("Bids:")
+        // console.log(bids);
+        // console.log("Asks:");
+        // console.log(asks);
       });
     this.updatesEnabled = true;
   }
