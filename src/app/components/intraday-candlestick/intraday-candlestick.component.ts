@@ -62,7 +62,10 @@ export class IntradayCandlestickComponent implements OnInit {
         tooltip: {
           valueDecimals: 2
         }
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
     }
   }
 }

@@ -72,7 +72,10 @@ export class TechnicalIndicatorSeriesStochasticComponent implements OnInit {
         yAxis: 1,
         type: 'stochastic',
         linkedTo: 'aapl'
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
     }
   }
 }

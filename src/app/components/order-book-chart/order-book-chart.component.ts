@@ -172,7 +172,10 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
       color: '#107db7',
       data: bidsData,
       yAxis: 1
-    }]
+    }],
+    credits : {
+      enabled: false
+    }
   };
 }
 

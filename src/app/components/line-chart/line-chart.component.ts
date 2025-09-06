@@ -113,6 +113,9 @@ export class LineChartComponent implements OnInit {
             }
           }
         }]
+      },
+      credits : {
+        enabled: false
       }
     };
   }

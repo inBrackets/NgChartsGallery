@@ -135,7 +135,10 @@ export class SmaAndVolumeByPriceComponent implements OnInit {
         marker: {
           enabled: false
         }
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
     }
   }
 }

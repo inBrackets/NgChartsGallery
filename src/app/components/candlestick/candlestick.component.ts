@@ -55,7 +55,10 @@ export class CandlestickComponent implements OnInit {
             ]
           ]
         }
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
     }
   }
 }

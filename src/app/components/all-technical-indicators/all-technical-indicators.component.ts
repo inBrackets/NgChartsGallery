@@ -112,7 +112,10 @@ export class AllTechnicalIndicatorsComponent implements OnInit {
           longPeriod: 35,   // instead of 26
           signalPeriod: 7   // instead of 9
         }
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
 
       // TODO: Add other js methods from the website
     }

@@ -72,7 +72,10 @@ export class TechnicalIndicatorSeriesRsiComponent implements OnInit {
         yAxis: 1,
         type: 'rsi',
         linkedTo: 'aapl'
-      }]
+      }],
+      credits : {
+        enabled: false
+      }
     }
   }
 }
