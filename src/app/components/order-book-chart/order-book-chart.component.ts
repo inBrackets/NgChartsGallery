@@ -7,7 +7,9 @@ import * as Highcharts from 'highcharts/highstock';
 function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], bidsData: Highcharts.PointOptionsObject[]): Highcharts.Options {
   return {
     chart: {
-      animation: { duration: 200 },
+      animation: {
+        duration: 200
+      },
       type: 'bar',
       backgroundColor: '#23232f',
       marginTop: 70
@@ -15,7 +17,9 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
 
     title: {
       text: 'Order book live chart',
-      style: { color: '#ffffff' }
+      style: {
+        color: '#ffffff'
+      }
     },
 
     tooltip: {
@@ -23,30 +27,130 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
       pointFormat: '{series.name}: <b>{point.y:,.0f}</b>'
     },
 
-    xAxis: [{ visible: false }, { visible: false }],
-    yAxis: [{ min: 0, max: 1200000 }, { min: 0, max: 1200000, reversed: true }],
+    xAxis: [{
+      reversed: true,
+      visible: false,
+      title: {
+        text: 'Market depth / price'
+      },
+      accessibility: {
+        description: 'Bid orders'
+      }
+    }, {
+      opposite: true,
+      visible: false,
+      title: {
+        text: 'Market depth / price'
+      },
+      accessibility: {
+        description: 'Ask orders'
+      }
+    }],
+    yAxis: [{
+      offset: 0,
+      visible: true,
+      opposite: true,
+      gridLineWidth: 0,
+      tickAmount: 1,
+      left: '50%',
+      width: '50%',
+      title: {
+        text: 'Amount of ask orders',
+        style: {
+          visibility: 'hidden'
+        }
+      },
+      min: 0,
+      max: 1200000,
+      labels: {
+        enabled: true,
+        format: '{#if isLast}Asks{/if}',
+        style: {
+          color: '#ffffff',
+        },
+        y: 10
+      }
+    }, {
+      offset: 0,
+      visible: true,
+      opposite: true,
+      gridLineWidth: 0,
+      tickAmount: 2,
+      left: '0%',
+      width: '50%',
+      reversed: true,
+      title: {
+        text: 'Amount of bid orders',
+        style: {
+          visibility: 'hidden'
+        }
+      },
+      min: 0,
+      max: 1200000,
+      labels: {
+        enabled: true,
+        format: `
+                {#if (eq pos 0)}Price ($){/if}
+                {#if isLast}Bids{/if}
+            `,
+        style: {
+          color: '#ffffff',
+        },
+        y: 10
+      }
+    }],
 
     legend: { enabled: false },
+
+    navigation: {
+      buttonOptions: {
+        theme: {
+          fill: 'none'
+        }
+      }
+    },
 
     plotOptions: {
       series: {
         animation: false,
+        dataLabels: {
+          enabled: true,
+          color: '#ffffff'
+        },
         borderWidth: 0,
-        dataLabels: { enabled: true, color: '#ffffff' }
+        crisp: false
       }
     },
 
     series: [{
       type: 'bar',
+      dataLabels: [{
+        align: 'right',
+        alignTo: 'plotEdges',
+        format: '{point.y:,.0f}'
+      }, {
+        align: 'left',
+        inside: true,
+        format: '{point.price:,.1f}'
+      }],
       name: 'Asks',
       color: '#ce4548',
       data: asksData
     }, {
       type: 'bar',
+      dataLabels: [{
+        align: 'left',
+        alignTo: 'plotEdges',
+        format: '{point.y:,.0f}'
+      }, {
+        align: 'right',
+        inside: true,
+        format: '{point.price:,.1f}'
+      }],
       name: 'Bids',
       color: '#107db7',
-      yAxis: 1,
-      data: bidsData
+      data: bidsData,
+      yAxis: 1
     }]
   };
 }
