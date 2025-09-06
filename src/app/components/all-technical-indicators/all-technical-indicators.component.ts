@@ -106,7 +106,12 @@ export class AllTechnicalIndicatorsComponent implements OnInit {
         type: 'macd',
         id: 'oscillator',
         linkedTo: 'aapl',
-        yAxis: 2
+        yAxis: 2,
+        params: {
+          shortPeriod: 5,   // instead of 12
+          longPeriod: 35,   // instead of 26
+          signalPeriod: 7   // instead of 9
+        }
       }]
 
       // TODO: Add other js methods from the website
