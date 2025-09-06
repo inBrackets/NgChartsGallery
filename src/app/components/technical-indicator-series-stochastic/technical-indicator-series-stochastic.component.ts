@@ -71,7 +71,10 @@ export class TechnicalIndicatorSeriesStochasticComponent implements OnInit {
       }, {
         yAxis: 1,
         type: 'stochastic',
-        linkedTo: 'aapl'
+        linkedTo: 'aapl',
+        tooltip: {
+          pointFormat: 'K: <b>{point.y:.2f}</b>, D: <b>{point.smoothed:.2f}</b><br/>'
+        }
       }],
       credits : {
         enabled: false
