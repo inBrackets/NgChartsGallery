@@ -2,12 +2,14 @@ import {Component, inject, OnInit} from '@angular/core';
 import {MasterService} from '../../services/master.service';
 import * as Highcharts from 'highcharts/highstock';
 import {HighchartsChartComponent, providePartialHighcharts} from 'highcharts-angular';
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-candlestick',
-  imports: [
-    HighchartsChartComponent
-  ],
+    imports: [
+        HighchartsChartComponent,
+        NgIf
+    ],
   providers: [
     providePartialHighcharts({
       modules: () => [import('highcharts/esm/modules/stock')],

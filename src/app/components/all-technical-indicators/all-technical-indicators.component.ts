@@ -2,12 +2,14 @@ import {Component, inject, OnInit} from '@angular/core';
 import {MasterService} from '../../services/master.service';
 import * as Highcharts from 'highcharts/highstock';
 import {HighchartsChartComponent, HighchartsChartDirective, providePartialHighcharts} from 'highcharts-angular';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-all-technical-indicators',
   imports: [
     HighchartsChartComponent,
-    HighchartsChartDirective
+    HighchartsChartDirective,
+    NgIf
   ],
   providers: [
     providePartialHighcharts({

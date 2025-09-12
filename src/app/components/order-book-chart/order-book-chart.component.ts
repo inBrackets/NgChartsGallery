@@ -3,6 +3,7 @@ import {HighchartsChartComponent, HighchartsChartDirective} from 'highcharts-ang
 import {OrderBookService} from '../../services/order-book.service';
 import {Subscription} from 'rxjs';
 import * as Highcharts from 'highcharts/highstock';
+import {NgIf} from "@angular/common";
 
 function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], bidsData: Highcharts.PointOptionsObject[]): Highcharts.Options {
   return {
@@ -182,10 +183,11 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
 
 @Component({
   selector: 'app-order-book-chart',
-  imports: [
-    HighchartsChartComponent,
-    HighchartsChartDirective
-  ],
+    imports: [
+        HighchartsChartComponent,
+        HighchartsChartDirective,
+        NgIf
+    ],
   templateUrl: './order-book-chart.component.html',
   standalone: true,
   styleUrl: './order-book-chart.component.css'

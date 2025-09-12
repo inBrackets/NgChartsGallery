@@ -3,14 +3,16 @@ import {MasterService} from '../../services/master.service';
 import * as Highcharts from 'highcharts/highstock';
 import {HighchartsChartComponent, providePartialHighcharts} from 'highcharts-angular';
 import { HighchartsChartDirective } from 'highcharts-angular';
+import {NgIf} from "@angular/common";
 
 
 @Component({
   selector: 'app-sma-and-volume-by-price',
-  imports: [
-    HighchartsChartComponent,
-    HighchartsChartDirective
-  ],
+    imports: [
+        HighchartsChartComponent,
+        HighchartsChartDirective,
+        NgIf
+    ],
   providers: [
     providePartialHighcharts({
       modules: () => [

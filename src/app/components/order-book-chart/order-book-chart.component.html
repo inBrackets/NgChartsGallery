@@ -1,5 +1,6 @@
 <p>order-book-chart works and generates bids and asks in order-book-service via order-book-chart.component</p>
 <highcharts-chart
+  *ngIf="chartOptions.series?.length"
   [constructorType]="'chart'"
   [options]="chartOptions"
   class="chart"

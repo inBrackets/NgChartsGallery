@@ -4,12 +4,14 @@ import {HighchartsChartComponent} from 'highcharts-angular';
 import {MasterService} from '../../services/master.service';
 import {NumberOfEmployees} from '../../model/master.model';
 import {forkJoin} from 'rxjs';
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-line-chart',
-  imports: [
-    HighchartsChartComponent
-  ],
+    imports: [
+        HighchartsChartComponent,
+        NgIf
+    ],
   templateUrl: './line-chart.component.html',
   standalone: true,
   styleUrl: './line-chart.component.css'
