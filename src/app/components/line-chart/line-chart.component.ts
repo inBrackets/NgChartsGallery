@@ -26,6 +26,11 @@ export class LineChartComponent implements OnInit {
 
   updateChart() {
     this.chartOptions = {
+
+      chart: {
+        width: null, // <- allow Highcharts to auto-fit container
+      },
+
       title: {
         text: 'U.S Solar Employment Growth',
         align: 'left'

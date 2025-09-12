@@ -42,7 +42,8 @@ export class AllTechnicalIndicatorsComponent implements OnInit {
   updateChart() {
     this.chartOptions = {
       chart: {
-        height: 600
+        height: 600,
+        width: null // <- allow Highcharts to auto-fit container
       },
       title: {
         text: 'AAPL Historical'

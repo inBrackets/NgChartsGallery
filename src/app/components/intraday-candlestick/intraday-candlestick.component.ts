@@ -37,6 +37,10 @@ export class IntradayCandlestickComponent implements OnInit {
         text: 'AAPL stock price by minute'
       },
 
+      chart: {
+        width: null, // <- allow Highcharts to auto-fit container
+      },
+
       rangeSelector: {
         buttons: [{
           type: 'hour',

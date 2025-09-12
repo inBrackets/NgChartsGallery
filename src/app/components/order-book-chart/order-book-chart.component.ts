@@ -12,6 +12,7 @@ function createOrderBookChartOptions(asksData: Highcharts.PointOptionsObject[], 
       },
       type: 'bar',
       backgroundColor: '#23232f',
+      width: null, // <- allow Highcharts to auto-fit container
       marginTop: 70
     },
 

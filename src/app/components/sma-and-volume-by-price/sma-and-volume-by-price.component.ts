@@ -51,6 +51,10 @@ export class SmaAndVolumeByPriceComponent implements OnInit {
   updateChart() {
     this.chartOptions = {
 
+      chart: {
+        width: null, // <- allow Highcharts to auto-fit container
+      },
+
       rangeSelector: {
         selected: 2
       },
