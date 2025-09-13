@@ -1,0 +1,8 @@
+<p>single-line-series works!</p>
+<highcharts-chart
+  *ngIf="chartOptions.series?.length"
+  [constructorType]="'stockChart'"
+  [options]="chartOptions"
+  class="chart"
+/>
+

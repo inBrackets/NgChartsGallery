@@ -2,10 +2,10 @@ import {Component, inject, OnInit} from '@angular/core';
 import {MasterService} from '../../services/master.service';
 import * as Highcharts from 'highcharts/highstock';
 import {HighchartsChartComponent, providePartialHighcharts} from 'highcharts-angular';
-import {NgIf} from "@angular/common";
+import {NgIf} from '@angular/common';
 
 @Component({
-  selector: 'app-candlestick',
+  selector: 'app-single-line-series',
   imports: [
     HighchartsChartComponent,
     NgIf
@@ -15,18 +15,18 @@ import {NgIf} from "@angular/common";
       modules: () => [import('highcharts/esm/modules/stock')],
     })
   ],
-  templateUrl: './candlestick.component.html',
+  templateUrl: './single-line-series.component.html',
   standalone: true,
-  styleUrl: './candlestick.component.css'
+  styleUrl: './single-line-series.component.css'
 })
-export class CandlestickComponent implements OnInit {
+export class SingleLineSeriesComponent implements OnInit {
 
   masterSrv = inject(MasterService);
-  data: [number, number, number, number, number][] = [];
+  data: [number, number][] = [];
   chartOptions: Highcharts.Options = {}
 
   ngOnInit(): void {
-    this.masterSrv.getAaplOhlc().subscribe((response: [number, number, number, number, number][]) => {
+    this.masterSrv.getAaplC().subscribe((response : [number, number][])=> {
       this.data = response;
       this.updateChart();
     })
@@ -34,11 +34,6 @@ export class CandlestickComponent implements OnInit {
 
   updateChart() {
     this.chartOptions = {
-
-      chart: {
-        width: null, // <- allow Highcharts to auto-fit container
-      },
-
       rangeSelector: {
         selected: 1
       },
@@ -47,25 +42,31 @@ export class CandlestickComponent implements OnInit {
         text: 'AAPL Stock Price'
       },
 
+      xAxis: {
+        overscroll: '10px'
+      },
+
       series: [{
-        type: 'candlestick',
-        name: 'AAPL Stock Price',
+        name: 'AAPL',
         data: this.data,
-        dataGrouping: {
-          units: [
-            [
-              'week', // unit name
-              [1] // allowed multiples
-            ], [
-              'month',
-              [1, 2, 3, 4, 6]
-            ]
-          ]
+        type: 'line',
+        tooltip: {
+          valueDecimals: 2
+        },
+        lastPrice: {
+          enabled: true,
+          color: 'transparent',
+          label: {
+            enabled: true,
+            backgroundColor: '#ffffff',
+            borderColor: '#2caffe',
+            borderWidth: 1,
+            style: {
+              color: '#000000'
+            }
+          }
         }
-      }],
-      credits: {
-        enabled: false
-      }
+      }]
     }
   }
 }

@@ -42,4 +42,8 @@ export class MasterService {
     return this.http.get<[number, number, number, number, number, number][]>('assets/aapl-ohlcv.json');
   }
 
+  getAaplC(): Observable<[number, number][]> {
+    return this.http.get<[number, number][]>('assets/aapl-c.json');
+  }
+
 }

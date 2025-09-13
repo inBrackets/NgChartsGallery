@@ -14,10 +14,11 @@ import {
   AllTechnicalIndicatorsComponent
 } from './components/all-technical-indicators/all-technical-indicators.component';
 import {OrderBookChartComponent} from './components/order-book-chart/order-book-chart.component';
+import {SingleLineSeriesComponent} from './components/single-line-series/single-line-series.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponent, TechnicalIndicatorSeriesRsiComponent, TechnicalIndicatorSeriesStochasticComponent, AllTechnicalIndicatorsComponent, OrderBookChartComponent],
+  imports: [RouterOutlet, LineChartComponent, IntradayCandlestickComponent, CandlestickComponent, SmaAndVolumeByPriceComponent, TechnicalIndicatorSeriesRsiComponent, TechnicalIndicatorSeriesStochasticComponent, AllTechnicalIndicatorsComponent, OrderBookChartComponent, SingleLineSeriesComponent],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.css'
