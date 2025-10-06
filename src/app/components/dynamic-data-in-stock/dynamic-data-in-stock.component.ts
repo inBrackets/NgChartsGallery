@@ -8,166 +8,102 @@ import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-dynamic-data-in-stock',
-  imports: [
-    HighchartsChartComponent,
-    NgIf
-  ],
+  standalone: true,
+  templateUrl: './dynamic-data-in-stock.component.html',
+  styleUrl: './dynamic-data-in-stock.component.css',
+  imports: [HighchartsChartComponent, NgIf],
   providers: [
     providePartialHighcharts({
       modules: () => [import('highcharts/esm/modules/stock')],
-    })
+    }),
   ],
-  templateUrl: './dynamic-data-in-stock.component.html',
-  standalone: true,
-  styleUrl: './dynamic-data-in-stock.component.css'
 })
 export class DynamicDataInStockComponent implements OnInit, OnDestroy {
-
   masterSrv = inject(MasterService);
-  data: [number, number, number, number, number][] = [];
-  chartOptions: Highcharts.Options = {}
-
   orderBookService = inject(OrderBookService);
-  private subscription?: Subscription;
-  bids: Highcharts.PointOptionsObject[] = [];
-  asks: Highcharts.PointOptionsObject[] = [];
 
+  data: [number, number, number, number, number][] = [];
+  chartOptions: Highcharts.Options = {};
   Highcharts: typeof Highcharts = Highcharts;
   chart?: Highcharts.Chart;
+  bids: Highcharts.PointOptionsObject[] = [];
+  asks: Highcharts.PointOptionsObject[] = [];
+  private subscription?: Subscription;
 
   ngOnInit(): void {
-    this.startLiveLastCandleUpdates()
-    this.masterSrv.getAaplOhlc().subscribe((response: [number, number, number, number, number][]) => {
+    this.masterSrv.getAaplOhlc().subscribe((response) => {
       this.data = response;
       this.initChart();
-    })
+      setTimeout(() => this.startLiveLastCandleUpdates(), 300);
+    });
+  }
+
+  onChartInstance(chart: Highcharts.Chart) {
+    this.chart = chart;
   }
 
   startLiveLastCandleUpdates() {
-    this.subscription = this.orderBookService
-      .startAutoUpdate(1, 1000) // 5 points every 1s
+    this.subscription = this.orderBookService.startAutoUpdate(1, 1000)
       .subscribe(([bids, asks]) => {
+        console.log('Bids:', bids);
+        console.log('Asks:', asks);
         this.bids = bids;
         this.asks = asks;
-        console.log("Bids:")
-        console.log(bids);
-        console.log("Asks:");
-        console.log(asks);
-
-        if (!this.chart) return;
-
-        const series = this.chart.get('aapl-series') as Highcharts.Series | undefined;
-        if (!series || !('data' in series) || series.type !== 'candlestick') return;
-
-        const candleSeries = series as { data: Highcharts.Point[] };
-        if (!candleSeries.data.length) return;
-
-        const lastPoint = candleSeries.data[candleSeries.data.length - 1];
-
-        const lastPrice = this.calculateMidPrice(bids, asks);
-        if (!lastPrice) return;
-
-        // Safely extract candle values from point.options
-        const opts = Array.isArray(lastPoint.options)
-          ? lastPoint.options
-          : (lastPoint.options as any);
-
-        // Handle both array and object formats
-        const open = Array.isArray(opts) ? opts[1] : opts.open ?? opts.o ?? 0;
-        const high = Array.isArray(opts) ? opts[2] : opts.high ?? opts.h ?? open;
-        const low  = Array.isArray(opts) ? opts[3] : opts.low ?? opts.l ?? open;
-        const close = lastPrice;
-
-        // Keep candle shape consistent
-        const newHigh = Math.max(high, close);
-        const newLow = Math.min(low, close);
-
-        // Animate candle update smoothly
-        // Disable chart redraw, then trigger a soft redraw after updating
-        lastPoint.update(
-          [lastPoint.x, open, newHigh, newLow, close],
-          false,  // don't redraw yet
-          false   // keep animation for next redraw
-        );
-
-        // Smoothly redraw the chart
-        this.chart.redraw(true); // true = animate
+        this.updateLastCandleWithMidPrice();
       });
   }
 
-  /** Compute mid-price (average of best bid and ask) */
+  updateLastCandleWithMidPrice() {
+    if (!this.chart) return;
+
+    const series = this.chart.get('aapl-series') as Highcharts.Series | undefined;
+    if (!series || !('data' in series) || !series.data.length) return;
+
+    const lastPoint = series.data.at(-1)!;
+    const lastMid = this.calculateMidPrice(this.bids, this.asks);
+    if (lastMid == null) return;
+
+    const opts = lastPoint.options as any;
+    const open = opts.open ?? opts.o ?? opts[1];
+    const high = opts.high ?? opts.h ?? opts[2];
+    const low  = opts.low  ?? opts.l ?? opts[3];
+
+    const close = lastMid;
+
+    lastPoint.update([lastPoint.x, open, Math.max(high, close), Math.min(low, close), close], false);
+    this.chart.redraw(false);
+  }
+
   private calculateMidPrice(
     bids: (Highcharts.PointOptionsObject | [number, number])[],
     asks: (Highcharts.PointOptionsObject | [number, number])[]
   ): number | null {
-    // Helper to extract price from either an object or tuple
-    const extractPrice = (point: Highcharts.PointOptionsObject | [number, number]): number | null => {
-      if (Array.isArray(point)) {
-        // tuple form: [price, volume]
-        return Number(point[0]);
-      }
-      if (typeof point === 'object' && point !== null) {
-        return Number(point.y ?? point.x ?? 0);
-      }
-      return null;
-    };
+    const extractPrice = (p: any) =>
+      Array.isArray(p) ? +p[0] : +((p?.price ?? p?.y ?? p?.x) ?? 0);
 
-    const bestBid = bids.length ? extractPrice(bids[0]) : null;
-    const bestAsk = asks.length ? extractPrice(asks[0]) : null;
+    const bestBid = bids.length ? Math.max(...bids.map(extractPrice)) : null;
+    const bestAsk = asks.length ? Math.min(...asks.map(extractPrice)) : null;
 
-    if (bestBid != null && bestAsk != null) {
-      return (bestBid + bestAsk) / 2;
-    }
+    if (bestBid != null && bestAsk != null) return (bestBid + bestAsk) / 2;
     return bestBid ?? bestAsk ?? null;
   }
 
   initChart() {
     this.chartOptions = {
-
-      chart: {
-        width: null, // <- allow Highcharts to auto-fit container
-        events: {
-          load: () => {
-            this.chart = this.Highcharts.charts[0]; // store reference for updates
-          }
-        }
-      },
-
-      rangeSelector: {
-        selected: 1
-      },
-
-      title: {
-        text: 'AAPL Stock Price'
-      },
-
+      chart: { width: null },
+      rangeSelector: { selected: 1 },
+      title: { text: 'AAPL Stock Price' },
       series: [{
         type: 'candlestick',
+        id: 'aapl-series',
         name: 'Dynamic data in Stock',
         data: this.data,
-        id: 'aapl-series',
         color: '#FF7F7F',
         upColor: '#90EE90',
-        lastPrice: {
-          enabled: true,
-          label: { enabled: true }
-        },
-        dataGrouping: {
-          units: [
-            [
-              'week', // unit name
-              [1] // allowed multiples
-            ], [
-              'month',
-              [1, 2, 3, 4, 6]
-            ]
-          ]
-        }
+        lastPrice: { enabled: true, label: { enabled: true } },
       }],
-      credits: {
-        enabled: false
-      }
-    }
+      credits: { enabled: false },
+    };
   }
 
   stopUpdates() {

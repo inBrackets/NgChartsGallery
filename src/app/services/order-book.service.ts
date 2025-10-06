@@ -22,7 +22,7 @@ export class OrderBookService {
     const bids: Highcharts.PointOptionsObject[] = [];
     const asks: Highcharts.PointOptionsObject[] = [];
 
-    let bidPrice = this.getRandomNumber(29000, 30000);
+    let bidPrice = this.getRandomNumber(220, 240);
     let askPrice = bidPrice + 0.5;
 
     for (let i = 0; i < n; i++) {
