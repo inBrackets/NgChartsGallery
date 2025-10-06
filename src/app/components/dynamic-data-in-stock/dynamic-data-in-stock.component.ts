@@ -57,6 +57,7 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
     if (!this.chart) return;
 
     const series = this.chart.get('aapl-series') as Highcharts.Series | undefined;
+    const liveLine = this.chart.get('live-price-line') as Highcharts.Series | undefined;
     if (!series || !('data' in series) || !series.data.length) return;
 
     const lastPoint = series.data.at(-1)!;
@@ -64,15 +65,24 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
     if (lastMid == null) return;
 
     const opts = lastPoint.options as any;
-    const open = opts.open ?? opts.o ?? opts[1];
-    const high = opts.high ?? opts.h ?? opts[2];
-    const low  = opts.low  ?? opts.l ?? opts[3];
-
+    const open = opts.open ?? opts.o ?? opts[1] ?? 0;
+    const high = opts.high ?? opts.h ?? opts[2] ?? open;
+    const low  = opts.low ?? opts.l ?? opts[3] ?? open;
     const close = lastMid;
 
-    lastPoint.update([lastPoint.x, open, Math.max(high, close), Math.min(low, close), close], false);
-    this.chart.redraw(false);
+    // Update candle smoothly
+    lastPoint.update(
+      [lastPoint.x, open, Math.max(high, close), Math.min(low, close), close],
+      true,
+      { duration: 300, easing: 'easeOutQuad' }
+    );
+
+    // Update live line smoothly
+    if (liveLine) {
+      liveLine.addPoint([Date.now(), close], true, true, { duration: 300 });
+    }
   }
+
 
   private calculateMidPrice(
     bids: (Highcharts.PointOptionsObject | [number, number])[],
