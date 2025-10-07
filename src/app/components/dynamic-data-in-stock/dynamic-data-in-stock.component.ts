@@ -56,8 +56,7 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
   updateLastCandleWithMidPrice() {
     if (!this.chart) return;
 
-    const series = this.chart.get('aapl-series') as Highcharts.Series | undefined;
-    const liveLine = this.chart.get('live-price-line') as Highcharts.Series | undefined;
+    const series = this.chart.get('aapl-series') as Highcharts.Series;
     if (!series || !('data' in series) || !series.data.length) return;
 
     const lastPoint = series.data.at(-1)!;
@@ -67,42 +66,36 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
     const opts = lastPoint.options;
     const open = opts.open ?? 0;
     const high = opts.high ?? 0;
-    const low  = opts.low ?? 0;
+    const low = opts.low ?? 0;
     const close = lastMid;
 
     // Update candle smoothly
     lastPoint.update(
       [lastPoint.x, open, Math.max(high, close), Math.min(low, close), close],
       true,
-      { duration: 300, easing: 'easeOutQuad' }
+      {duration: 150, easing: 'easeOutQuad'}
     );
-
-    // Update live line smoothly
-    if (liveLine) {
-      liveLine.addPoint([Date.now(), close], true, true, { duration: 300 });
-    }
   }
 
 
   private calculateMidPrice(
-    bids: (Highcharts.PointOptionsObject | [number, number])[],
-    asks: (Highcharts.PointOptionsObject | [number, number])[]
-  ): number | null {
-    const extractPrice = (p: any) =>
-      Array.isArray(p) ? +p[0] : +((p?.price ?? p?.y ?? p?.x) ?? 0);
+    bids: Highcharts.PointOptionsObject[],
+    asks: Highcharts.PointOptionsObject[]
+  ): number {
+    const extractPrice = (p: any) => +((p.price) ?? 0);
 
-    const bestBid = bids.length ? Math.max(...bids.map(extractPrice)) : null;
-    const bestAsk = asks.length ? Math.min(...asks.map(extractPrice)) : null;
+    const bestBid = bids.length ? Math.max(...bids.map(extractPrice)) : 0;
+    const bestAsk = asks.length ? Math.min(...asks.map(extractPrice)) : 0;
 
     if (bestBid != null && bestAsk != null) return (bestBid + bestAsk) / 2;
-    return bestBid ?? bestAsk ?? null;
+    return bestBid ?? bestAsk;
   }
 
   initChart() {
     this.chartOptions = {
-      chart: { width: null },
-      rangeSelector: { selected: 1 },
-      title: { text: 'AAPL Stock Price' },
+      chart: {width: null},
+      rangeSelector: {selected: 1},
+      title: {text: 'AAPL Stock Price'},
       series: [{
         type: 'candlestick',
         id: 'aapl-series',
@@ -110,9 +103,9 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
         data: this.data,
         color: '#FF7F7F',
         upColor: '#90EE90',
-        lastPrice: { enabled: true, label: { enabled: true } },
+        lastPrice: {enabled: true, label: {enabled: true}},
       }],
-      credits: { enabled: false },
+      credits: {enabled: false},
     };
   }
 
