@@ -64,10 +64,10 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
     const lastMid = this.calculateMidPrice(this.bids, this.asks);
     if (lastMid == null) return;
 
-    const opts = lastPoint.options as any;
-    const open = opts.open ?? opts.o ?? opts[1] ?? 0;
-    const high = opts.high ?? opts.h ?? opts[2] ?? open;
-    const low  = opts.low ?? opts.l ?? opts[3] ?? open;
+    const opts = lastPoint.options;
+    const open = opts.open ?? 0;
+    const high = opts.high ?? 0;
+    const low  = opts.low ?? 0;
     const close = lastMid;
 
     // Update candle smoothly
