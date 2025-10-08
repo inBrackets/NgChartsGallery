@@ -1,10 +1,10 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {MasterService} from '../../services/master.service';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { MasterService } from '../../services/master.service';
 import * as Highcharts from 'highcharts/highstock';
-import {HighchartsChartComponent, providePartialHighcharts} from 'highcharts-angular';
-import {NgIf} from '@angular/common';
-import {OrderBookService} from '../../services/order-book.service';
-import {Subscription} from 'rxjs';
+import { HighchartsChartComponent, providePartialHighcharts } from 'highcharts-angular';
+import { NgIf } from '@angular/common';
+import { OrderBookService } from '../../services/order-book.service';
+import { Subscription, interval, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-dynamic-data-in-stock',
@@ -29,12 +29,15 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
   bids: Highcharts.PointOptionsObject[] = [];
   asks: Highcharts.PointOptionsObject[] = [];
   private subscription?: Subscription;
+  private refreshSubscription?: Subscription;
 
   ngOnInit(): void {
+    // Initial load
     this.masterSrv.getAaplOhlc().subscribe((response) => {
       this.data = response;
       this.initChart();
       setTimeout(() => this.startLiveLastCandleUpdates(), 300);
+      this.startAutoRefreshCandles();
     });
   }
 
@@ -69,14 +72,12 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
     const low = opts.low ?? 0;
     const close = lastMid;
 
-    // Update candle smoothly
     lastPoint.update(
       [lastPoint.x, open, Math.max(high, close), Math.min(low, close), close],
       true,
-      {duration: 150, easing: 'easeOutQuad'}
+      { duration: 150, easing: 'easeOutQuad' }
     );
   }
-
 
   private calculateMidPrice(
     bids: Highcharts.PointOptionsObject[],
@@ -93,9 +94,9 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
 
   initChart() {
     this.chartOptions = {
-      chart: {width: null},
-      rangeSelector: {selected: 1},
-      title: {text: 'AAPL Stock Price'},
+      chart: { width: null },
+      rangeSelector: { selected: 1 },
+      title: { text: 'AAPL Stock Price' },
       series: [{
         type: 'candlestick',
         id: 'aapl-series',
@@ -103,14 +104,28 @@ export class DynamicDataInStockComponent implements OnInit, OnDestroy {
         data: this.data,
         color: '#FF7F7F',
         upColor: '#90EE90',
-        lastPrice: {enabled: true, label: {enabled: true}},
+        lastPrice: { enabled: true, label: { enabled: true } },
       }],
-      credits: {enabled: false},
+      credits: { enabled: false },
     };
+  }
+
+  /** 🔁 Refresh all candles every 30 seconds */
+  startAutoRefreshCandles() {
+    this.refreshSubscription = interval(30_000)
+      .pipe(switchMap(() => this.masterSrv.getAaplOhlc()))
+      .subscribe((response) => {
+        this.data = response;
+        const series = this.chart?.get('aapl-series') as Highcharts.Series;
+        if (series) {
+          series.setData(this.data, true);
+        }
+      });
   }
 
   stopUpdates() {
     this.subscription?.unsubscribe();
+    this.refreshSubscription?.unsubscribe();
   }
 
   ngOnDestroy(): void {
